@@ -857,3 +857,4 @@ MonoBehaviour:
   player: {fileID: 963666077}
   text: {fileID: 1974809753}
   text2: {fileID: 1296089020}
+  maxBoost: 10

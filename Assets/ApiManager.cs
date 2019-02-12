@@ -32,7 +32,7 @@ public class ApiManager : MonoBehaviour {
 		using (UnityWebRequest coucou = new UnityWebRequest("http://51.15.121.74:3000/coucou"))
 		{
 			yield return coucou.SendWebRequest();
-			text.text = coucou.text;
+			// text.text = coucou.text;
 		}
 	}
 

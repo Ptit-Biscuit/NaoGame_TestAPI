@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 
 public class ApiManager : MonoBehaviour {
 
@@ -14,10 +15,10 @@ public class ApiManager : MonoBehaviour {
 
 	IEnumerator getReset()
 	{
-		using (WWW reset = new WWW("http://51.15.121.74:3000/reset"))
+		using (UnityWebRequest reset = new UnityWebRequest("http://51.15.121.74:3000/reset"))
 		{
-			yield return reset;
-			text.text = reset.text;
+			yield return reset.SendWebRequest();
+			// text.text = reset.text;
 		}
 	}
 
@@ -28,9 +29,9 @@ public class ApiManager : MonoBehaviour {
 
 	IEnumerator getCoucou()
 	{
-		using (WWW coucou = new WWW("http://51.15.121.74:3000/coucou"))
+		using (UnityWebRequest coucou = new UnityWebRequest("http://51.15.121.74:3000/coucou"))
 		{
-			yield return coucou;
+			yield return coucou.SendWebRequest();
 			text.text = coucou.text;
 		}
 	}
@@ -42,10 +43,10 @@ public class ApiManager : MonoBehaviour {
 
 	IEnumerator getBonjour()
 	{
-		using (WWW bonjour = new WWW("http://51.15.121.74:3000/bonjour"))
+		using (UnityWebRequest bonjour = new UnityWebRequest("http://51.15.121.74:3000/bonjour"))
 		{
-			yield return bonjour;
-			text.text = bonjour.text;
+			yield return bonjour.SendWebRequest();
+			// text.text = bonjour.text;
 		}
 	}
 }

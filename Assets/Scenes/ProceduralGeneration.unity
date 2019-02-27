@@ -141,9 +141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da09044de3219db4ca374b7246363eff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roomsWanted: 10
-  startRoom: {fileID: 114031697900445362, guid: 40e8808e008d2484299c7b5286b29df9,
-    type: 3}
+  level: {fileID: 11400000, guid: 6f0fe68424692b145933c69ed536ca8d, type: 2}
   rooms:
   - {fileID: 114188668093525424, guid: b17c3a7c9176dba418618f570fe131a2, type: 3}
   - {fileID: 114099620533962872, guid: 50cb99ad14cb21d4ea56e75b792258e1, type: 3}
@@ -244,7 +242,7 @@ Camera:
   far clip plane: 15
   field of view: 60
   orthographic: 1
-  orthographic size: 15.29
+  orthographic size: 30
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2

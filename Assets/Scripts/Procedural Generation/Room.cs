@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,17 +6,27 @@ public class Room : MonoBehaviour {
 
 	public int width;
 	public int height;
+	public List<ETag> tags;
 	public List<SpawnPoint> spawnPoints;
+	public bool overlaps = false;
 
-	public Rect checkZone; 
+	// TODO; remove later, it's just here to debug
+	public Rect debugZone;
 
-	void Start() {
-		checkZone = new Rect();
-		checkZone.size = new Vector2(width - 1, height - 1);
-		checkZone.center = transform.position;
+	public void DestroySpawnPoint(SpawnPoint spawnPoint) {
+		spawnPoints.Remove(spawnPoint);
+		Destroy(spawnPoint.gameObject);
+	}
 
-		foreach(SpawnPoint spawnPoint in spawnPoints) {
-			spawnPoint.Plop(this);
-		}
+	void OnTriggerEnter2D(Collider2D other) {
+		overlaps = true;
+	}
+
+	// TODO: remove later
+	private void OnDrawGizmosSelected() {
+		Gizmos.color = Color.red;
+		debugZone = new Rect();
+		debugZone.size = new Vector2(width - 1, height - 1);
+		Gizmos.DrawWireCube(transform.position, debugZone.size);
 	}
 }

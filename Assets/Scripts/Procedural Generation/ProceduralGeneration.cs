@@ -7,8 +7,7 @@ public class ProceduralGeneration : MonoBehaviour {
 
     public Level level;
     public List<Room> rooms;
-    private List<Room> generatedRooms;
-
+    public List<Room> generatedRooms;
     private static System.Func<Room, SpawnPoint, bool> checkInverse =
         (room, spawnPoint) => room.spawnPoints.Any(sp => sp.orientation == inverseOrientation(spawnPoint.orientation));
     private static System.Func<Room, ETag, bool> checkTag = (room, tag) => room.tags.Contains(tag);
@@ -18,26 +17,18 @@ public class ProceduralGeneration : MonoBehaviour {
             return;
         }
 
-		generatedRooms = new List<Room>();
+        generatedRooms = new List<Room>();
         generatedRooms.Add(Instantiate(level.startRoom));
-        StartCoroutine(Generation());
+
+        System.DateTime start = System.DateTime.Now;
+        StartCoroutine(SpawnNextRoom(generatedRooms.Last()));
+        Debug.Log("Done in " + (System.DateTime.Now - start));
     }
 
-    IEnumerator Generation() {
-		System.DateTime start = System.DateTime.Now;
-
-        while (generatedRooms.Count <= level.minimumRooms) {
-            StartCoroutine(SpawnNextRoom(generatedRooms.Count, generatedRooms.Last()));
-            yield return new WaitForSeconds(0.2f);
-        }
-
-		Debug.Log("Done in " + (System.DateTime.Now - start));
-    }
-
-    public IEnumerator SpawnNextRoom(int roomIndex, Room last) {
+    IEnumerator SpawnNextRoom(Room last) {
         SpawnPoint spawnPoint = last.spawnPoints.ElementAt(Random.Range(0, last.spawnPoints.Count()));
 
-        IEnumerable<Room> availableRooms = GetAvailableRooms(roomIndex, spawnPoint);
+        IEnumerable<Room> availableRooms = rooms.Where(room => checkInverse(room, spawnPoint) && !checkTag(room, ETag.END));
         Room roomToSpawn = availableRooms.ElementAt(Random.Range(0, availableRooms.Count()));
 
         Room spawnedRoom = Instantiate(roomToSpawn, Vector2.zero, roomToSpawn.transform.rotation);
@@ -46,8 +37,6 @@ public class ProceduralGeneration : MonoBehaviour {
 
         spawnedRoom.transform.position = spawnPoint.transform.position + -otherSpawnPoint.transform.position;
 
-        yield return new WaitForSeconds(0.1f);
-
         if (!spawnedRoom.overlaps) {
             last.DestroySpawnPoint(spawnPoint);
             spawnedRoom.DestroySpawnPoint(otherSpawnPoint);
@@ -55,11 +44,8 @@ public class ProceduralGeneration : MonoBehaviour {
         } else {
             Destroy(spawnedRoom.gameObject);
         }
-    }
 
-    public IEnumerable<Room> GetAvailableRooms(int roomIndex, SpawnPoint spawnPoint) {
-        return rooms.Where(room => checkInverse(room, spawnPoint) &&
-            (roomIndex < level.minimumRooms) ? !checkTag(room, ETag.END) : checkTag(room, ETag.END));
+        yield return generatedRooms.Count < level.minimumRooms ? StartCoroutine(SpawnNextRoom(generatedRooms.Last())) : null;
     }
 
     public static EOrientation inverseOrientation(EOrientation orientation) {

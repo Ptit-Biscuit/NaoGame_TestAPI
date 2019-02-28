@@ -20,9 +20,10 @@ public class ProceduralGeneration : MonoBehaviour {
         generatedRooms = new List<Room>();
         generatedRooms.Add(Instantiate(level.startRoom));
 
-        System.DateTime start = System.DateTime.Now;
         StartCoroutine(SpawnNextRoom(generatedRooms.Last()));
-        Debug.Log("Done in " + (System.DateTime.Now - start));
+        // TODO: Spawn filler rooms
+        // TODO: Check if level has [Shop, Loot, Combat, etc]
+        // TODO: Seed based level
     }
 
     IEnumerator SpawnNextRoom(Room last) {
@@ -36,6 +37,8 @@ public class ProceduralGeneration : MonoBehaviour {
 			spawnedRoom.spawnPoints.Where(sp => sp.orientation == inverseOrientation(spawnPoint.orientation)).First();
 
         spawnedRoom.transform.position = spawnPoint.transform.position + -otherSpawnPoint.transform.position;
+
+        yield return new WaitForSeconds(0.05f);
 
         if (!spawnedRoom.overlaps) {
             last.DestroySpawnPoint(spawnPoint);

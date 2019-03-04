@@ -6,6 +6,7 @@ using UnityEngine;
 public class ProceduralGeneration : MonoBehaviour {
 
     public Level level;
+    private XXHash hash;
     public List<Room> rooms;
     public List<Room> generatedRooms;
     private static System.Func<Room, SpawnPoint, bool> checkInverse =
@@ -17,20 +18,21 @@ public class ProceduralGeneration : MonoBehaviour {
             return;
         }
 
+        hash = new XXHash(level.seed);
+
         generatedRooms = new List<Room>();
         generatedRooms.Add(Instantiate(level.startRoom));
 
-        StartCoroutine(SpawnNextRoom(generatedRooms.Last()));
+        StartCoroutine(SpawnNextRoom(generatedRooms.Last(), hash.GetHash(generatedRooms.Count())));
         // TODO: Spawn filler rooms
         // TODO: Check if level has [Shop, Loot, Combat, etc]
-        // TODO: Seed based level
     }
 
-    IEnumerator SpawnNextRoom(Room last) {
-        SpawnPoint spawnPoint = last.spawnPoints.ElementAt(Random.Range(0, last.spawnPoints.Count()));
-
+    IEnumerator SpawnNextRoom(Room last, uint hashValue) {
+        XXHash roomHash = new XXHash((int) hashValue);
+        SpawnPoint spawnPoint = last.spawnPoints.ElementAt(roomHash.Range(0, last.spawnPoints.Count(), (int) hashValue));
         IEnumerable<Room> availableRooms = rooms.Where(room => checkInverse(room, spawnPoint) && !checkTag(room, ETag.END));
-        Room roomToSpawn = availableRooms.ElementAt(Random.Range(0, availableRooms.Count()));
+        Room roomToSpawn = availableRooms.ElementAt(roomHash.Range(0, availableRooms.Count(), (int) hashValue));
 
         Room spawnedRoom = Instantiate(roomToSpawn, Vector2.zero, roomToSpawn.transform.rotation);
         SpawnPoint otherSpawnPoint =
@@ -48,7 +50,8 @@ public class ProceduralGeneration : MonoBehaviour {
             Destroy(spawnedRoom.gameObject);
         }
 
-        yield return generatedRooms.Count < level.minimumRooms ? StartCoroutine(SpawnNextRoom(generatedRooms.Last())) : null;
+        yield return generatedRooms.Count() < level.minimumRooms ?
+            StartCoroutine(SpawnNextRoom(generatedRooms.Last(), hash.GetHash(hashValue))) : null;
     }
 
     public static EOrientation inverseOrientation(EOrientation orientation) {

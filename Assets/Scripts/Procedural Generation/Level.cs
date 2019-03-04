@@ -7,17 +7,8 @@ public class Level : ScriptableObject {
 
     public int seed;
 
-    public XXHash hash {
-        get {
-            return hash;
-        }
-        private set {
-            hash = new XXHash(seed);
-        }
-    }
-
     [Range(5, 15)]
-    public int minimumRooms = 5;
+    public int minimumRooms;
 
     public Room startRoom;
 
@@ -28,4 +19,9 @@ public class Level : ScriptableObject {
     // public bool hasBoss = false;
 
     // public bool isFinalBoss = false;
+
+    private void Awake() {
+        seed = Random.Range(int.MinValue, int.MaxValue);
+        minimumRooms = 5;
+    }
 }

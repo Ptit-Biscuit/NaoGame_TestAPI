@@ -1789,11 +1789,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   width: 21
   height: 11
-  tags: 000000000300000004000000
+  tags: 00000000
   spawnPoints:
   - {fileID: 114750355456595700}
   - {fileID: 114132521129786782}
   - {fileID: 114862325609467888}
+  overlaps: 0
+  debugZone:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 20
+    height: 10
 --- !u!50 &6551486240115302135
 Rigidbody2D:
   serializedVersion: 4

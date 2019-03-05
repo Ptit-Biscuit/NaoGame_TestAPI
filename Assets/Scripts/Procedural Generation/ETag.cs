@@ -1,6 +1,6 @@
 public enum ETag {
     ANY,
-    START,
+    BLOCK_END,
     END,
     CORRIDOR,
     THREEWAY,

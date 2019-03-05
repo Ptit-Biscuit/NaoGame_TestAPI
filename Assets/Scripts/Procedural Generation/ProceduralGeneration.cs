@@ -12,6 +12,7 @@ public class ProceduralGeneration : MonoBehaviour {
     private static System.Func<Room, SpawnPoint, bool> checkInverse =
         (room, spawnPoint) => room.spawnPoints.Any(sp => sp.orientation == inverseOrientation(spawnPoint.orientation));
     private static System.Func<Room, ETag, bool> checkTag = (room, tag) => room.tags.Contains(tag);
+    private static int plop = 0;
 
     void Start() {
         if (level == null || level.startRoom == null) {
@@ -31,12 +32,20 @@ public class ProceduralGeneration : MonoBehaviour {
     IEnumerator SpawnNextRoom(Room last, uint hashValue) {
         XXHash roomHash = new XXHash((int) hashValue);
         SpawnPoint spawnPoint = last.spawnPoints.ElementAt(roomHash.Range(0, last.spawnPoints.Count(), (int) hashValue));
-        IEnumerable<Room> availableRooms = rooms.Where(room => checkInverse(room, spawnPoint) && !checkTag(room, ETag.END));
+        IEnumerable<Room> availableRooms =
+        rooms.Where(room => checkInverse(room, spawnPoint) && !checkTag(room, ETag.END) && !checkTag(room, ETag.BLOCK_END));
         Room roomToSpawn = availableRooms.ElementAt(roomHash.Range(0, availableRooms.Count(), (int) hashValue));
+
+        // if (plop < 10) {
+        //     roomToSpawn = availableRooms.ElementAt(roomHash.Range(0, availableRooms.Count(), (int) hashValue));
+        // } else {
+        //     roomToSpawn = rooms.First(room => checkTag(room, ETag.BLOCK_END));
+        //     plop = 0;
+        // }
 
         Room spawnedRoom = Instantiate(roomToSpawn, Vector2.zero, roomToSpawn.transform.rotation);
         SpawnPoint otherSpawnPoint =
-			spawnedRoom.spawnPoints.Where(sp => sp.orientation == inverseOrientation(spawnPoint.orientation)).First();
+			spawnedRoom.spawnPoints.First(sp => sp.orientation == inverseOrientation(spawnPoint.orientation));
 
         spawnedRoom.transform.position = spawnPoint.transform.position + -otherSpawnPoint.transform.position;
 
@@ -48,6 +57,7 @@ public class ProceduralGeneration : MonoBehaviour {
             generatedRooms.Add(spawnedRoom);
         } else {
             Destroy(spawnedRoom.gameObject);
+            plop++;
         }
 
         yield return generatedRooms.Count() < level.minimumRooms ?

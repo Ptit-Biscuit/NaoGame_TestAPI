@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca3d46f18072ddb4c98dfd76c46dbaa6, type: 3}
   m_Name: Level 1
   m_EditorClassIdentifier: 
-  seed: 2
-  minimumRooms: 15
-  startRoom: {fileID: 114267641779120176, guid: aff01e1b915ef7443a14ff67a1563a5e,
-    type: 3}
+  seed: 1234420924
+  minimumRooms: 5
+  startRoom: {fileID: 0}

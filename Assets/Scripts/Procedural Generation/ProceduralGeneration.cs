@@ -24,7 +24,7 @@ public class ProceduralGeneration : MonoBehaviour {
         generatedRooms = new List<Room>();
         generatedRooms.Add(Instantiate(level.startRoom));
 
-        StartCoroutine(SpawnNextRoom(generatedRooms.Last(), hash.GetHash(generatedRooms.Count())));
+        StartCoroutine(SpawnNextRoom(generatedRooms[plop], hash.GetHash(generatedRooms.Count())));
         // TODO: Spawn filler rooms
         // TODO: Check if level has [Shop, Loot, Combat, etc]
     }
@@ -33,7 +33,7 @@ public class ProceduralGeneration : MonoBehaviour {
         XXHash roomHash = new XXHash((int) hashValue);
         SpawnPoint spawnPoint = last.spawnPoints.ElementAt(roomHash.Range(0, last.spawnPoints.Count(), (int) hashValue));
         IEnumerable<Room> availableRooms =
-        rooms.Where(room => checkInverse(room, spawnPoint) && !checkTag(room, ETag.END) && !checkTag(room, ETag.BLOCK_END));
+            rooms.Where(room => checkInverse(room, spawnPoint) && !checkTag(room, ETag.END) && !checkTag(room, ETag.BLOCK_END));
         Room roomToSpawn = availableRooms.ElementAt(roomHash.Range(0, availableRooms.Count(), (int) hashValue));
 
         // if (plop < 10) {
@@ -57,11 +57,10 @@ public class ProceduralGeneration : MonoBehaviour {
             generatedRooms.Add(spawnedRoom);
         } else {
             Destroy(spawnedRoom.gameObject);
-            plop++;
         }
 
         yield return generatedRooms.Count() < level.minimumRooms ?
-            StartCoroutine(SpawnNextRoom(generatedRooms.Last(), hash.GetHash(hashValue))) : null;
+            StartCoroutine(SpawnNextRoom(generatedRooms[last.spawnPoints.Count() == 0 ? ++plop : plop], hash.GetHash(hashValue))) : null;
     }
 
     public static EOrientation inverseOrientation(EOrientation orientation) {

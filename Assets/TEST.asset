@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca3d46f18072ddb4c98dfd76c46dbaa6, type: 3}
   m_Name: TEST
   m_EditorClassIdentifier: 
-  seed: 670591797
-  minimumRooms: 5
+  seed: -1927630875
+  minimumRooms: 15
   startRoom: {fileID: 1951383391763618503, guid: 928e586b941fcc34fba874dfb80a50f7,
     type: 3}
